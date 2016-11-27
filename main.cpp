@@ -5,7 +5,7 @@
 #include <cstdio>
 
 float angle=0.0;
-float ex = 0, ey = 50, ez = 150, cx = 0, cy = 0, cz = -1; 
+float ex = 0, ey = 0, ez = 150, cx = 0, cy = 0, cz = -1; 
 
 int cube;
 objloader obj;	//create an instance of the objloader
@@ -99,14 +99,14 @@ void display()
 	float pos[]={-1.0,1.0,-2.0,1.0};
 	glLightfv(GL_LIGHT0,GL_POSITION,pos);
 	
-	glScalef(5.0f, 5.0f, 5.0f); // shrinks the boy; hes too big
+	glScalef(2.0f, 2.0f, 2.0f); // shrinks the boy; hes too big
 	glRotatef(angle, 0.0f, 1.0f, 0.0f); //spin the models
 	
 	glEnable(GL_TEXTURE_2D);
    GLuint texture;
    texture = loadTextures("Textures/marble.bmp");
    glBindTexture(GL_TEXTURE_2D, texture);
-	glTranslatef(0.0f,-20.0f,-0.0f);
+	glTranslatef(0.0f,-23.0f,-0.0f);
    glBegin(GL_QUADS);
       // Front Face
       glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
@@ -182,15 +182,15 @@ void display()
 	//glLoadIdentity();
    glFlush();
    
-   glScalef(0.0f, 0.0f, 0.0f);
-   glScalef(0.125f, 0.125f, 0.125); // shrinks the boy; hes too big
+
+   glScalef(0.07f, 0.07f, 0.07f); // shrinks the boy; hes too big
 	
 	if(currentFrame<30){
 		glCallList(frames[currentFrame]);
 		
 	}
 	else if(currentFrame<60){
-		glTranslatef(0.0, 50.0, 38.0);
+		glTranslatef(0.0, 40.0, 38.0);
 		glCallList(frames[currentFrame]);
 	}
 	
