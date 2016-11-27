@@ -1,8 +1,3 @@
-//This example program is created by thecplusplusuy for demonstration purposes. It's a simple 3D model loader (wavefront (.obj)), which is capable to load materials and UV textures:
-//http://www.youtube.com/user/thecplusplusguy
-//Free source, modify if you want, LGPL licence (I guess), I would be happy, if you would not delete the link
-//so other people can see the tutorial
-//this file is the objloader.h
 #include <SDL/SDL.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
