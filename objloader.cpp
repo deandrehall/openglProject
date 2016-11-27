@@ -4,6 +4,7 @@
 //so other people can see the tutorial
 //this file is the objloader.cpp
 #include "objloader.h"
+#include <string>
 	//nothing to explain here
 	coordinate::coordinate(float a,float b,float c)
 	{
@@ -68,7 +69,7 @@
 		v=b;
 	}
 
-int objloader::load(const char* filename)
+int objloader::load(const char* filename, std::string path)
 {
 	std::ifstream in(filename);	//open the model file
 	if(!in.is_open())
@@ -151,11 +152,15 @@ int objloader::load(const char* filename)
 																																																			//all of the materials
 	{
 		char filen[200];
+		//char dummy[200] = "character_walkingupstairs/";
+		
 		sscanf(coord[i]->c_str(),"mtllib %s",filen);	//read the filename
+		strcpy(filen, (path+filen).data());
+		std::cout<< filen <<std::endl;
 		std::ifstream mtlin(filen);	//open the file
 		if(!mtlin.is_open())	//if not opened error message, clean all memory, return with -1
 		{
-			std::cout << "connot open the material file" << std::endl;
+			std::cout << "connot open the material file " << filen << std::endl;
 			clean();
 			return -1;
 		}

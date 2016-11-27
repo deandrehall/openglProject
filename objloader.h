@@ -67,7 +67,7 @@ class objloader{
 	public:
 	objloader();	
 	~objloader();	//free the textures and lists
-	int load(const char* filename);	//the main model load function
+	 int load(const char* filename, std::string path);	//the main model load function
 };
 
 #endif
