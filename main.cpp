@@ -3,9 +3,10 @@
 #include <string>
 #include <vector>
 #include <cstdio>
+#include <cmath>
 
 float angle=0.0;
-float ex = 0, ey = 0, ez = 150, cx = 0, cy = 0, cz = -1; 
+float ex = 0, ey = 0, ez = 100, cx = 0, cy = 0, cz = -1; 
 
 int cube;
 objloader obj;	//create an instance of the objloader
@@ -25,6 +26,35 @@ void loadAnimation(std::vector<unsigned int>& frames,std::string path, std::stri
         frames.push_back(id);
     }
 }
+
+void drawSphere(double r, int lats, int longs) {
+       int i, j;
+       for(i = 0; i <= lats; i++) {
+          double lat0 = M_PI * (-0.5 + (double) (i - 1) / lats);
+          double z0  = sin(lat0);
+          double zr0 =  cos(lat0);
+    
+          double lat1 = M_PI * (-0.5 + (double) i / lats);
+          double z1 = sin(lat1);
+          double zr1 = cos(lat1);
+    
+          glBegin(GL_QUAD_STRIP);
+          
+           for(j = 0; j <= longs; j++) {
+           
+		       double lng = 2 * M_PI * (double) (j - 1) / longs;
+		       double x = cos(lng);
+		       double y = sin(lng);
+
+		       glNormal3f(x * zr0, y * zr0, z0);
+		       glVertex3f(x * zr0, y * zr0, z0);
+		       glNormal3f(x * zr1, y * zr1, z1);
+		       glVertex3f(x * zr1, y * zr1, z1);
+		       
+           }
+           glEnd();
+       }
+   }
 
 GLuint loadTextures(const char *filename) 
 {
@@ -76,7 +106,7 @@ GLuint loadTextures(const char *filename)
 
 void init()
 {
-	glClearColor(0.5,0.5,0.5,1.0);
+	glClearColor(0.0,0.0,0.0,1.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(45,640.0/480.0,1.0,500.0);
@@ -94,19 +124,75 @@ void display()
 {	
 	
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glColorMaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glEnable (GL_COLOR_MATERIAL);
+	
 	glLoadIdentity();
 	gluLookAt(ex, ey, ez, 0, 0, 0, 0, 1, 0);
 	float pos[]={-1.0,1.0,-2.0,1.0};
+	GLfloat light1_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+	GLfloat light1_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat light1_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+	//glEnable(GL_LIGHTING);
+
 	glLightfv(GL_LIGHT0,GL_POSITION,pos);
+	glLightfv(GL_LIGHT1, GL_AMBIENT, light1_ambient);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, light1_specular);
+
+	glEnable(GL_LIGHT1);
 	
 	glScalef(2.0f, 2.0f, 2.0f); // shrinks the boy; hes too big
 	glRotatef(angle, 0.0f, 1.0f, 0.0f); //spin the models
 	
 	glEnable(GL_TEXTURE_2D);
-   GLuint texture;
-   texture = loadTextures("Textures/marble.bmp");
+	GLuint texture;
+	texture = loadTextures("Textures/zangief.bmp");
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTranslatef(0.0f,-1.0f,0.0f);
+   	glBegin(GL_QUADS);
+      // Front Face
+      glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+      glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+      glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
+      glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
+      // Back Face
+      glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+      glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
+      glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
+      glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+      // Top Face
+      glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
+      glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
+      glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
+      glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
+      // Bottom Face
+      glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+      glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+      glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+      glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+      // Right face
+      glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+      glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
+      glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
+      glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+      // Left Face
+      glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+      glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+      glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
+      glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
+   glEnd();
+   
+   glTranslatef(0.0f,1.0f,0.0f);
+   
+   //glLoadIdentity();
+	
+	glColorMaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glEnable (GL_COLOR_MATERIAL);
+   glTranslatef(0.0,1.5f,2.0f);                      // Move Into The Screen 5 Units
+   texture = loadTextures("Textures/baby.bmp");
    glBindTexture(GL_TEXTURE_2D, texture);
-	glTranslatef(0.0f,-23.0f,-0.0f);
+
    glBegin(GL_QUADS);
       // Front Face
       glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
@@ -140,48 +226,17 @@ void display()
       glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
    glEnd();
    
+   glTranslatef(0.0f,-1.5f,-2.0f); 
+   
    //glLoadIdentity();
-
-   glTranslatef(-1.5f,-1.5f,-1.0f);                      // Move Into The Screen 5 Units
-   texture = loadTextures("Textures/pattern.bmp");
-   glBindTexture(GL_TEXTURE_2D, texture);
-
-   glBegin(GL_QUADS);
-      // Front Face
-      glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
-      glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
-      glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
-      glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
-      // Back Face
-      glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-      glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
-      glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
-      glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
-      // Top Face
-      glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
-      glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
-      glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
-      glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
-      // Bottom Face
-      glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-      glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
-      glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
-      glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
-      // Right face
-      glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
-      glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
-      glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
-      glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
-      // Left Face
-      glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-      glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
-      glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
-      glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
-   glEnd();
-
+   	
+   	glTranslatef(1.75f, 14.5f, 5.5f);
+	drawSphere(1.0, 10, 10); // glutSolidSphere(1.0, 10, 10);
+	//glutSwapBuffers();
 	//glLoadIdentity();
    glFlush();
    
+   glTranslatef(-1.75f, -14.5f,-5.5f);
 
    glScalef(0.07f, 0.07f, 0.07f); // shrinks the boy; hes too big
 	

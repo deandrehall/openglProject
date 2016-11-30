@@ -35,7 +35,7 @@
 	}
 	
 	//nothing to explain here
-	material::material(const char* na,float al,float n,float ni2,float* d,float* a,float* s,int i,int t)
+	material::material(const char* na,float al,float n,float ni2,float* d,float* a,float* s,int i,GLuint t)
 	{
 		name=na;
 		alpha=al;
@@ -56,8 +56,7 @@
 		illum=i;
 		texture=t;
 	}
-	
-	//nothing to explain here
+
 	texcoord::texcoord(float a,float b)
 	{
 		u=a;
@@ -151,7 +150,7 @@ int objloader::load(const char* filename, std::string path)
 		
 		sscanf(coord[i]->c_str(),"mtllib %s",filen);	//read the filename
 		strcpy(filen, (path+filen).data());
-		std::cout<< filen <<std::endl;
+		//std::cout<< filen <<std::endl;
 		std::ifstream mtlin(filen);	//open the file
 		if(!mtlin.is_open())	//if not opened error message, clean all memory, return with -1
 		{
@@ -223,7 +222,7 @@ int objloader::load(const char* filename, std::string path)
 			}else if(tmp[i][0]=='m' && tmp[i][1]=='a')	//and the texture
 			{
 				sscanf(tmp[i].c_str(),"map_Kd %s",filename);
-				texture=loadTexture(filename);	//read the filename, and use the loadTexture function to load it, and get the id.
+				texture=loadTexture(filename, path);	//read the filename, and use the loadTexture function to load it, and get the id.
 				ismat=true;
 			}
 		}
@@ -249,7 +248,7 @@ int objloader::load(const char* filename, std::string path)
 		ismaterial=false;
 	else	//else we have
 		ismaterial=true;
-	std::cout << vertex.size() << " " << normals.size() << " " << faces.size() << " " << materials.size() << std::endl; 	//test purposes
+
 	//draw
 	int num;
 	num=glGenLists(1);	//I generate a unique identifier for the list
@@ -369,29 +368,36 @@ objloader::~objloader()
 }
 
 //load the filename textures (only BMP, R5G6B5 format)
-unsigned int objloader::loadTexture(const char* filename)
+GLuint objloader::loadTexture(const char* filename, std::string path)
 {
 
-	unsigned int num;
-    glGenTextures(1, &num);
-    int width,height;
-    unsigned char* image = SOIL_load_image(filename, &width, &height, 0, SOIL_LOAD_RGB);
-    // Assign texture to ID
-    glBindTexture(GL_TEXTURE_2D, num);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-    //glGenerateMipmap(GL_TEXTURE_2D);	
+	char filen[200];		
+	strcpy(filen, (path+filename).data());
 
-    // Parameters
+	GLuint textureID;
+    glGenTextures(1, &textureID);
+    int width,height;
+
+    textureID = SOIL_load_OGL_texture(filen, SOIL_LOAD_AUTO,SOIL_CREATE_NEW_ID,SOIL_FLAG_MIPMAPS|SOIL_FLAG_INVERT_Y|SOIL_FLAG_NTSC_SAFE_RGB|SOIL_FLAG_COMPRESS_TO_DXT);
+
+
+ if( !textureID ) // error loading file
+ 	std::cout << "Texture " << filen << " not loaded. " << std::endl;
+
+
+    glBindTexture(GL_TEXTURE_2D, textureID);
+   
+    std::cout << filen << std::endl;
+
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
-    SOIL_free_image_data(image);
 
 
-	texture.push_back(num);
-	return num;
+	texture.push_back(textureID);
+	return textureID;
 }
 
 

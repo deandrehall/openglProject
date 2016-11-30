@@ -1,4 +1,5 @@
 #include <SDL/SDL.h>
+#include <GL/glew.h> // Contains all the necessery OpenGL includes
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <cstdlib>
@@ -35,8 +36,8 @@ struct material{
 	float alpha,ns,ni;	//some property, alpha, shininess, and some other, which we not used
 	float dif[3],amb[3],spec[3];	//the color property (diffuse, ambient, specular)
 	int illum;	//illum - we not use it
-	int texture;	//the id for the texture, if there is no texture than -1
-	material(const char* na,float al,float n,float ni2,float* d,float* a,float* s,int i,int t);
+	GLuint texture;	//the id for the texture, if there is no texture than -1
+	material(const char* na,float al,float n,float ni2,float* d,float* a,float* s,int i,GLuint t);
 };
 
 //texture coorinate (UV coordinate), nothing to explain here
@@ -56,7 +57,7 @@ class objloader{
 	std::vector<material*> materials;	//all materials
 	std::vector<texcoord*> texturecoordinate;	//all texture coorinate (UV coordinate)
 	bool ismaterial,isnormals,istexture;	//obvious
-	unsigned int loadTexture(const char* filename);	//private load texture function
+	unsigned int loadTexture(const char* filename, std::string path);	//private load texture function
 	void clean();	//free all of the used memory
 	
 	public:

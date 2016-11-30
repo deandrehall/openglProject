@@ -3,7 +3,7 @@ illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd Boy_Hair_diffuse.png
+map_Kd character_walkingupstairs/Boy_Hair_diffuse.png
 Ni 1.00
 Ks 0.07 0.07 0.07
 Ns 18.00
@@ -21,7 +21,7 @@ illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd -o -1 -1 Boy_Head_diffuse.png
+map_Kd Boy_Head_diffuse.png
 Ni 1.00
 Ks 0.02 0.02 0.02
 Ns 18.00
