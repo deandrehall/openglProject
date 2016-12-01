@@ -1,3 +1,7 @@
+//This example program is created by thecplusplusuy for demonstration purposes. It's a simple 3D model loader (wavefront (.obj)), which is capable to load materials and UV textures:
+//http://www.youtube.com/user/thecplusplusguy
+//Free source, modify if you want, LGPL licence (I guess), I would be happy, if you would not delete the link so other people can see the tutorial
+
 #include "objloader.h"
 #include <string>
 	//nothing to explain here
@@ -68,7 +72,7 @@ int objloader::load(const char* filename, std::string path)
 	std::ifstream in(filename);	//open the model file
 	if(!in.is_open())
 	{
-		std::cout << "Nor oepened" << std::endl; //if it's not opened then error message, and return with -1
+		std::cout << "Cannot open "<< filename << std::endl; //if it's not opened then error message, and return with -1
 		return -1;
 	}
 	char buf[256];	//temp buffer
